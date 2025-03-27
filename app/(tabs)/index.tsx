@@ -1,74 +1,145 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, Button, TextInput } from "react-native"
+import Camera from '@/components/Camera'
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function Index() {
+  const [scannedText, setScannedText] = useState<string>('')
+  const [code, setCode] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(0);
 
-export default function HomeScreen() {
+  const handleScan = (data: string) => {
+    const [scannedCode, scannedName] = data.split("|"); // Splitting data
+    setCode(scannedCode);
+    setName(scannedName);
+  };
+
+  const increaseQuantity = () => {
+    setQuantity(prevQuantity => prevQuantity + 1);
+  };
+
+  const decreaseQuantity = () => {
+    setQuantity(prevQuantity => (prevQuantity > 0 ? prevQuantity - 1 : 0));
+  };
+
+  const handleSave = () => {
+    if (code.trim() && quantity > 0) {
+      // insertSalesRecord(scannedText, quantity);
+      alert('Sales record saved successfully!');
+      setCode('');
+      setName('');
+      setQuantity(0);
+    } else {
+      alert('Please scan a product and enter a valid quantity.');
+    }
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View className="flex-1 items-center" style={styles.mainBg} >
+      <Camera onScan={handleScan} />
+
+      {code && name ? (
+        <View style={{ marginTop: 20, alignItems: "center" }}>
+          <Text style={styles.itemCode}>Code: {code}</Text>
+          <Text style={styles.itemName}>Name: {name}</Text>
+          <Text style={styles.itemQuantity}>Sold Quantity</Text>
+
+          <View style={styles.inputContainer}>
+            <TouchableOpacity style={styles.button} onPress={decreaseQuantity}>
+              <FontAwesome6 name="minus" size={20} color="white" />
+            </TouchableOpacity>
+
+            <TextInput
+              style={styles.quantityInput}
+              placeholder="Enter quantity"
+              keyboardType="numeric"
+              value={String(quantity)}
+              onChangeText={text => setQuantity(Number(text))}
+            />
+
+            <TouchableOpacity style={styles.button} onPress={increaseQuantity}>
+              <FontAwesome6 name="plus" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={styles.submit} onPress={handleSave}>
+            <Text style={styles.buttonText}>Save Record</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <Text style={{ padding: 60, fontSize: 18, color: "#FFF", textAlign: "center" }}>
+          Please scan a valid QR code to begin
+        </Text>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  mainBg: {
+    backgroundColor: '#125172',
+  },
+  itemCode: {
+    fontSize: 24,
+    color: "#F5EEDC",
+  },
+  itemName: {
+    fontSize: 25,
+    color: "#FFF",
+    fontWeight: "bold",
+  },
+  itemQuantity: {
+    fontSize: 15,
+    color: "#FFF",
+    fontWeight: "bold",
+    marginTop: 10,
+  },
+  inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    marginTop: 5,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  quantityInput: {
+    height: 50,
+    width: 90,
+    borderColor: '#183B4E',
+    borderWidth: 1,
+    paddingLeft: 10,
+    borderRadius: 5,
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: "bold",
+    backgroundColor: '#FFF',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  button: {
+    backgroundColor: '#27548A',
+    width: 40,
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#183B4E',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginHorizontal: 10,
   },
+  buttonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: "bold",
+    textShadowColor: "#000",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 3
+  },
+  submit: {
+    backgroundColor: '#DDA853',
+    width: 150,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: '#183B4E',
+  }
 });
