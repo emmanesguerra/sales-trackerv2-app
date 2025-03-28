@@ -18,11 +18,25 @@ export const insertSalesRecord = async (database: SQLiteDatabase, code: string, 
 export const getSalesRecords = async (database: SQLiteDatabase): Promise<any[]> => {
     try {
         const result = await database.getAllAsync(
-            `SELECT code, name, qty, date, time FROM sales ORDER BY date DESC, time DESC;`
+            `SELECT * FROM sales ORDER BY id DESC;`
         );
         return result;
     } catch (error) {
         console.error('Error fetching sales records:', error);
+        return [];
+    }
+};
+
+// Get sales records by a specific date
+export const getSalesRecordsByDate = async (database: SQLiteDatabase, date: string): Promise<any[]> => {
+    try {
+        const result = await database.getAllAsync(
+            `SELECT * FROM sales WHERE date = ? ORDER BY id DESC;`,
+            [date]
+        );
+        return result;
+    } catch (error) {
+        console.error('Error fetching sales records by date:', error);
         return [];
     }
 };
