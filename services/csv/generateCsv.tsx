@@ -12,10 +12,8 @@ export const generateCsv = async (salesRecords: any[]): Promise<string> => {
 
   try {
     await FileSystem.writeAsStringAsync(fileUri, csvContent, { encoding: FileSystem.EncodingType.UTF8 });
-    console.log('CSV file created at:', fileUri);
-    return fileUri; // Return the file path to be used later
+    return fileUri;
   } catch (error) {
-    console.error('Error generating CSV:', error);
-    throw error; // Reject if there's an error
+    throw error;
   }
 };

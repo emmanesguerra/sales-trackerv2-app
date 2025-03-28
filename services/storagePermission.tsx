@@ -9,7 +9,6 @@ export async function requestStoragePermission() {
 
     // If permission is already granted, no need to ask again
     if (PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('Storage permission already granted');
       return; // Exit the function if permission is granted
     }
 
@@ -22,14 +21,8 @@ export async function requestStoragePermission() {
         buttonPositive: 'OK',
       }
     );
-
-    // Check if permission is granted after requesting
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('Storage permission granted');
-    } else {
-      console.log('Storage permission denied');
-    }
+    
   } catch (err) {
-    console.warn(err);
+    throw err;
   }
 }

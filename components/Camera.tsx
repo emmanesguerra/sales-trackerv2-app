@@ -1,5 +1,5 @@
 
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'
+import { CameraView, CameraMountError, CameraType, useCameraPermissions } from 'expo-camera'
 import React, { useState, Component } from 'react'
 import { Text, View, Button, StyleSheet, TouchableOpacity } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -15,6 +15,8 @@ const Camera: React.FC<QRCodeScannerProps> = ({ onScan }) => {
     const [permission, requestPermission] = useCameraPermissions();
     const [torch, setTorch] = useState(false);
     const [isScanning, setIsScanning] = useState(false);
+    const [cameraKey, setCameraKey] = useState(0);
+    const [cameraError, setCameraError] = useState<string | null>(null);
 
     if (!permission) {
         return <View />;
@@ -36,19 +38,37 @@ const Camera: React.FC<QRCodeScannerProps> = ({ onScan }) => {
         }
     };
 
+    const handleMountError = (event: CameraMountError) => {
+        setCameraError(event.message);
+    };
+    
+    const retryCamera = () => {
+        setCameraError(null);
+        setCameraKey(prevKey => prevKey + 1); // Change key to force re-render
+    };
+
     return (
         <View>
-            <CameraView
-                onBarcodeScanned={handleScanResult}
-                barcodeScannerSettings={{
-                    barcodeTypes: ["qr", "pdf417"],
-                }}
-                style={[styles.camera, styles.shadow]}
-                facing={facing}
-                enableTorch={torch}
-                zoom={1}
-            >
-            </CameraView>
+            {cameraError ? (
+                <View>
+                    <Text style={{ color: 'red' }}>Camera Error: {cameraError}</Text>
+                    <Button title="Retry Camera" onPress={retryCamera} />
+                </View>
+            ) : (
+                <CameraView
+                    key={cameraKey} // Changing key forces a fresh re-mount
+                    onBarcodeScanned={handleScanResult}
+                    barcodeScannerSettings={{
+                        barcodeTypes: ["qr", "pdf417"],
+                    }}
+                    style={[styles.camera, styles.shadow]}
+                    facing={facing}
+                    enableTorch={torch}
+                    zoom={1}
+                    onMountError={handleMountError}
+                >
+                </CameraView>
+            )}
             <View style={{ alignItems: "center", marginTop: 16 }}>
                 <TouchableOpacity onPress={() => setIsScanning(true)} style={[styles.scanBtn, styles.shadow]} >
                     <MaterialCommunityIcons name="qrcode-scan" size={25} color="white" />

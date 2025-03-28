@@ -32,7 +32,6 @@ export default function Guide() {
       await updateAllSalesRecordsSyncStatus(database);
 
     } catch (error) {
-      console.error('Error:', error);
       alert('There was an error processing the sales records.');
     }
   };

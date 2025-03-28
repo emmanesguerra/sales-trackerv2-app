@@ -15,8 +15,7 @@ export const setupDatabase = async (database: SQLiteDatabase) => {
                 is_sync INTEGER DEFAULT 0
             );`
         );
-        console.log('Sales table created successfully');
     } catch (error) {
-        console.error('Error creating table:', error);
+        throw error;
     }
 };

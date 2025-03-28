@@ -3,14 +3,15 @@ import { SQLiteDatabase } from 'expo-sqlite';
 // Insert a new sales record
 export const insertSalesRecord = async (database: SQLiteDatabase, code: string, name: string, quantity: number) => {
     try {
+        const localDate = new Date().toLocaleDateString('en-CA'); // Ensures YYYY-MM-DD in local time
         const localTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Get local time (HH:MM)
+
         await database.runAsync(
-            'INSERT INTO sales (code, name, qty, time) VALUES (?, ?, ?, ?);',
-            [code, name, quantity, localTime]
+            'INSERT INTO sales (code, name, qty, date, time) VALUES (?, ?, ?, ?, ?);',
+            [code, name, quantity, localDate, localTime]
         );
-        console.log('Sales record inserted successfully');
     } catch (error) {
-        console.error('Error inserting sales record:', error);
+        throw error;
     }
 };
 
@@ -22,8 +23,7 @@ export const getSalesRecords = async (database: SQLiteDatabase): Promise<any[]> 
         );
         return result;
     } catch (error) {
-        console.error('Error fetching sales records:', error);
-        return [];
+        throw error;
     }
 };
 
@@ -36,8 +36,7 @@ export const getSalesRecordsByDate = async (database: SQLiteDatabase, date: stri
         );
         return result;
     } catch (error) {
-        console.error('Error fetching sales records by date:', error);
-        return [];
+        throw error;
     }
 };
 
@@ -49,8 +48,7 @@ export const getNotSyncSalesRecords = async (database: SQLiteDatabase): Promise<
         );
         return result;
     } catch (error) {
-        console.error('Error fetching sales records:', error);
-        return [];
+        throw error;
     }
 };
 
@@ -58,9 +56,8 @@ export const getNotSyncSalesRecords = async (database: SQLiteDatabase): Promise<
 export const updateAllSalesRecordsSyncStatus = async (database: SQLiteDatabase) => {
     try {
         await database.runAsync('UPDATE sales SET is_sync = 1 WHERE is_sync = 0;');
-        console.log('All sales records have been marked as synced.');
     } catch (error) {
-        console.error('Error updating sync status for all records:', error);
+        throw error;
     }
 };
 
@@ -68,8 +65,7 @@ export const updateAllSalesRecordsSyncStatus = async (database: SQLiteDatabase) 
 export const clearSalesRecords = async (database: SQLiteDatabase) => {
     try {
         await database.runAsync('DELETE FROM sales;');
-        console.log('Sales records cleared');
     } catch (error) {
-        console.error('Error clearing sales records:', error);
+        throw error;
     }
 };
