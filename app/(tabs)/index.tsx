@@ -2,12 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Button, TextInput } from "react-native"
 import Camera from '@/components/Camera'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { useSQLiteContext } from 'expo-sqlite';
+import { insertSalesRecord, getSalesRecords } from '@/db/sales';
 
 export default function Index() {
   const [scannedText, setScannedText] = useState<string>('')
   const [code, setCode] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(0);
+  const database = useSQLiteContext();
+
+  const saveRecord = async () => {
+    await insertSalesRecord(database, code, name, quantity);
+};
 
   const handleScan = (data: string) => {
     const [scannedCode, scannedName] = data.split("|"); // Splitting data
@@ -26,6 +33,7 @@ export default function Index() {
   const handleSave = () => {
     if (code.trim() && quantity > 0) {
       // insertSalesRecord(scannedText, quantity);
+      saveRecord();
       alert('Sales record saved successfully!');
       setCode('');
       setName('');
@@ -42,7 +50,7 @@ export default function Index() {
       {code && name ? (
         <View style={{ marginTop: 20, alignItems: "center" }}>
           <Text style={styles.itemCode}>Code: {code}</Text>
-          <Text style={styles.itemName}>Name: {name}</Text>
+          <Text style={styles.itemName}>Item: {name}</Text>
           <Text style={styles.itemQuantity}>Sold Quantity</Text>
 
           <View style={styles.inputContainer}>
@@ -63,7 +71,7 @@ export default function Index() {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.submit} onPress={handleSave}>
+          <TouchableOpacity style={[styles.submit, styles.shadow]} onPress={handleSave}>
             <Text style={styles.buttonText}>Save Record</Text>
           </TouchableOpacity>
         </View>
@@ -81,7 +89,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#125172',
   },
   itemCode: {
-    fontSize: 24,
+    fontSize: 12,
     color: "#F5EEDC",
   },
   itemName: {
@@ -141,5 +149,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderWidth: 1,
     borderColor: '#183B4E',
+  },
+  shadow: {
+      shadowColor: "#000",
+      shadowOffset: {
+          width: 0,
+          height: 9,
+      },
+      shadowOpacity: 0.58,
+      shadowRadius: 16.00,
+      elevation: 24,
   }
 });
