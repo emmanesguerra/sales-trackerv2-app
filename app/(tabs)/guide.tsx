@@ -1,11 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
+import { requestStoragePermission } from '@/services/storagePermission';
+import { sendMail } from '@/services/mail/sendMail';
+import { generateCsv } from '@/services/csv/generateCsv';
+import { useSQLiteContext } from 'expo-sqlite';
+import { getNotSyncSalesRecords, updateAllSalesRecordsSyncStatus} from '@/db/sales';
 
-const Guide = () => {
+export default function Guide() {
+
+  const database = useSQLiteContext(); // Get SQLite instance
+
+  useEffect(() => {
+    requestStoragePermission();
+  }, []);
+
+  const handleSendEmail = async () => {
+    try {
+      // Fetch unsync records
+      const records = await getNotSyncSalesRecords(database);
+
+      // Generate CSV
+      const filePath = await generateCsv(records);
+
+      sendMail(filePath);
+
+      // update all non-sync records to is_sync = 1
+      await updateAllSalesRecordsSyncStatus(database);
+
+    } catch (error) {
+      console.error('Error:', error);
+      alert('There was an error processing the sales records.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* HOMEPAGE GUIDE */}
@@ -48,9 +79,9 @@ const Guide = () => {
         <Text>Press this <Feather name="send" size={16} color="black" /> below to send an email with the database attachment</Text>
 
         <View style={styles.submitContainer}>
-          <TouchableOpacity style={styles.submit} className="flex-row justify-center items-center px-4 py-3">
-            <Feather style={ styles.textShadow } name="send" size={24} color="white" />
-            <Text style={ styles.textShadow } className="text-white ml-2 text-2xl">Submit Records</Text>
+          <TouchableOpacity style={styles.submit} className="flex-row justify-center items-center px-4 py-3" onPress={handleSendEmail}>
+            <Feather style={styles.textShadow} name="send" size={24} color="white" />
+            <Text style={styles.textShadow} className="text-white ml-2 text-2xl">Submit Records</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -99,5 +130,3 @@ const styles = StyleSheet.create({
     textShadowRadius: 1
   }
 });
-
-export default Guide;

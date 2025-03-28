@@ -41,6 +41,29 @@ export const getSalesRecordsByDate = async (database: SQLiteDatabase, date: stri
     }
 };
 
+// Get all not sync sales records
+export const getNotSyncSalesRecords = async (database: SQLiteDatabase): Promise<any[]> => {
+    try {
+        const result = await database.getAllAsync(
+            `SELECT * FROM sales WHERE is_sync = 0;`
+        );
+        return result;
+    } catch (error) {
+        console.error('Error fetching sales records:', error);
+        return [];
+    }
+};
+
+// Update isSync to 1 for all sales records
+export const updateAllSalesRecordsSyncStatus = async (database: SQLiteDatabase) => {
+    try {
+        await database.runAsync('UPDATE sales SET is_sync = 1 WHERE is_sync = 0;');
+        console.log('All sales records have been marked as synced.');
+    } catch (error) {
+        console.error('Error updating sync status for all records:', error);
+    }
+};
+
 // Clear sales records
 export const clearSalesRecords = async (database: SQLiteDatabase) => {
     try {
