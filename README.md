@@ -1,50 +1,115 @@
-# Welcome to your Expo app 👋
+# Sales Tracker Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Sales Tracker Mobile App** is a mobile application built using **React Native** and **Expo** to help businesses manage their sales records. The app allows users to scan QR codes, input sales quantities, store records locally, and sync data via email.
 
-## Get started
+## Table of Contents
+- [Description](#description)
+- [Tech Stack](#tech-stack)
+- [Installation](#installation)
+- [Folder Structure](#folder-structure)
+- [Features](#features)
+- [Testing](#testing)
+- [Future Development](#future-development)
+- [License](#license)
 
-1. Install dependencies
+
+## Tech Stack
+
+The app is built with the following technologies:
+
+- **React Native**: Framework for building cross-platform mobile apps.
+- **Expo**: Platform for building and running React Native apps.
+- **Expo SQLite**: Local database for storing sales records on the device.
+- **Expo Camera**: Used for scanning QR codes.
+- **React Navigation**: Navigation library for routing between screens.
+- **Tailwind CSS (via Nativewind)**: Utility-first CSS framework for styling the app.
+- **Jest**: JavaScript testing framework for unit and integration testing.
+
+## Installation
+
+### Prerequisites
+Before running the app, ensure the following are installed:
+- **Node.js** (version 16 or above)
+- **Expo CLI** (for running the app)
+
+To install Expo CLI:
+
+```bash
+npm install -g expo-cli
+```
+
+### Steps to Run the App
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/emmanesguerra/sales-trackerv2-app.git
+   ```
+
+2. Navigate to the project folder:
+
+   ```bash
+   cd sales-trackerv2-app
+   ```
+
+3. Install dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+4. Start the Expo project:
 
    ```bash
-    npx expo start
+   npm run android
    ```
 
-In the output, you'll find options to open the app in a
+5. Open the app on your mobile device using the **Expo Go** app (available on Android and iOS).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Running on Android/iOS Emulator:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- For **Android**:
 
-## Get a fresh project
+  ```bash
+  expo run:android
+  ```
 
-When you're ready, run:
+## Folder Structure
 
-```bash
-npm run reset-project
+Here's the folder structure for the Sales Tracker Mobile App:
+
+```
+app/
+├── (tabs)                   # This folder contains the layout and routing for the tab navigation.
+│   ├── _layout.tsx          # The layout for the tab navigation.
+│   └── index.tsx            # Entry point for the main tab navigation.
+├── components/              # Reusable UI components.
+│   ├── View/                # Contains components related to displaying different views.
+│   └── Camera.tsx           # Camera component used for QR scanning.
+├── db/                      # Database-related files.
+│   ├── init.tsx             # Initializes the SQLite database.
+│   └── sales.tsx            # Contains functions related to saving and retrieving sales records.
+├── services/                # Services that handle app's external functionalities.
+│   ├── csv/                 # Functions for exporting data to CSV.
+│   ├── mail/                # Handles email synchronization for sales records.
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Features
 
-## Learn more
+- **Scan QR Codes/Barcodes**: Users can scan QR codes to add products to their sales records.
+- **Input Product Quantity**: After scanning, users can input the quantity of products sold.
+- **Local Storage**: Sales records are stored in the phone's local SQLite database.
+- **Sales History**: View a list of all sales records, including product names, quantities, and timestamps.
+- **End-of-Day Sync**: Sync the sales records via email to be uploaded to the local server
+- **Intuitive User Interface**: Designed for ease of use with a simple and clean layout.
 
-To learn more about developing your project with Expo, look at the following resources:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Future Development
 
-## Join the community
+The following features and improvements are planned for future releases:
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- **Cloud Syncing**: Implement cloud synchronization to back up sales data and access it across multiple devices.
+- **User Authentication**: Add user accounts and authentication for personalized tracking of sales records.
+- **Offline Mode Enhancements**: Improve offline functionality by automatically syncing records when the device reconnects to the internet.
+- **Sales Analytics**: Add data visualizations like charts and graphs to display sales trends and performance.
+- **Multi-language Support**: Support multiple languages for a wider audience.
