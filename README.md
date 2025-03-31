@@ -3,14 +3,11 @@
 **Sales Tracker Mobile App** is a mobile application built using **React Native** and **Expo** to help businesses manage their sales records. The app allows users to scan QR codes, input sales quantities, store records locally, and sync data via email.
 
 ## Table of Contents
-- [Description](#description)
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
 - [Folder Structure](#folder-structure)
 - [Features](#features)
-- [Testing](#testing)
 - [Future Development](#future-development)
-- [License](#license)
 
 
 ## Tech Stack
