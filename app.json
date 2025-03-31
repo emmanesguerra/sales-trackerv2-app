@@ -15,7 +15,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/nahida.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.binawnaw.salestracker"
     },
     "web": {
       "bundler": "metro",
@@ -45,6 +50,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "fe5731b7-fecf-4784-b2b5-6317099a593c"
+      }
+    },
+    "owner": "binawnaw"
   }
 }
